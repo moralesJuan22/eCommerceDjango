@@ -1,0 +1,60 @@
+<!-- store/templates/store/cart_detail.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tu Carrito de Compras</title>
+    <style>
+        body { font-family: sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        .total { font-weight: bold; font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <h1>Tu Carrito de Compras</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Imagen</th>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Precio Total</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart %}
+                {% with product=item.product %}
+                    <tr>
+                        <td>
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" width="100">
+                            {% endif %}
+                        </td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.price }}</td>
+                        <td>${{ item.total_price }}</td>
+                        <td>
+                            <a href="{% url 'cart_remove' product.id %}">Eliminar</a>
+                        </td>
+                    </tr>
+                {% endwith %}
+            {% endfor %}
+
+            <tr class="total">
+                <td colspan="4">Total General</td>
+                <td colspan="2">${{ cart.get_total_price }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        <a href="{% url 'product_list' %}">Seguir comprando</a>
+    </p>
+
+</body>
+</html>

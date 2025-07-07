@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-g">
+    <title>Mi Tienda Online</title>
+    <style>
+        /* Estilos básicos para que se vea decente */
+        body { font-family: sans-serif; }
+        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .product-card { border: 1px solid #ccc; padding: 15px; text-align: center; }
+        .product-card img { max-width: 100%; height: 200px; object-fit: cover; }
+    </style>
+</head>
+<header>
+    <p>
+        Tu carrito: {{ cart|length }} producto(s), ${{ cart.get_total_price }}
+        <a href="{% url 'cart_detail' %}">Ver carrito</a>
+    </p>
+</header>
+<body>
+    <h1>Nuestros Productos</h1>
+
+    <div class="product-grid">
+        {% for product in products %}
+            <div class="product-card">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% endif %}
+                <h2>{{ product.name }}</h2>
+                <p><strong>Precio:</strong> ${{ product.price }}</p>
+                <p>{{ product.description|truncatewords:20 }}</p>
+            </div>
+
+            <div class="product-card">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% endif %}
+                <h2>{{ product.name }}</h2>
+                <p><strong>Precio:</strong> ${{ product.price }}</p>
+                <p>{{ product.description|truncatewords:20 }}</p>
+    
+                <!-- Formulario para añadir al carrito -->
+                <form action="{% url 'cart_add' product.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Añadir al Carrito</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
