@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis pedidos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="bg-[#f8f6ff] min-h-screen">
+    <header class="bg-gradient-to-r from-purple-400 to-purple-600 text-white shadow-md">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between py-4 px-6">
+            <span class="font-bold text-2xl tracking-tight">Mi Tienda Online</span>
+            <a href="{% url 'product_list' %}" class="hover:underline">Volver a la tienda</a>
+        </div>
+    </header>
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold text-purple-700 mb-6 text-center">Mis pedidos</h1>
+        <div class="bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto">
+            <ul>
+                {% for order in orders %}
+                    <li class="mb-6 border-b pb-4">
+                        <span class="font-semibold text-purple-700">Pedido #{{ order.id }}</span>
+                        <span class="text-gray-500">- {{ order.creado }}</span>
+                        <ul class="ml-4 mt-2">
+                            {% for item in order.items.all %}
+                                <li class="text-gray-700">{{ item.quantity }} x {{ item.product.name }} - ${{ item.price }}</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% empty %}
+                    <li class="text-center text-gray-500">No tienes pedidos.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </main>
+    <footer class="bg-purple-600 text-white text-center py-4 mt-10">
+        <span>&copy; {{ now|date:"Y" }} Mi Tienda Online. Todos los derechos reservados.</span>
+    </footer>
+</body>
+</html>

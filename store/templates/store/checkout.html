@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Finalizar compra</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="bg-[#f8f6ff] min-h-screen">
+    <header class="bg-gradient-to-r from-purple-400 to-purple-600 text-white shadow-md">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between py-4 px-6">
+            <span class="font-bold text-2xl tracking-tight">Mi Tienda Online</span>
+            <a href="{% url 'product_list' %}" class="hover:underline">Volver a la tienda</a>
+        </div>
+    </header>
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold text-purple-700 mb-6 text-center">Finalizar compra</h1>
+        <div class="bg-white rounded-lg shadow-md p-6 max-w-xl mx-auto">
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded transition-colors duration-200">
+                    Realizar pedido
+                </button>
+            </form>
+            <h2 class="text-lg font-semibold text-purple-700 mt-8 mb-2">Resumen del carrito</h2>
+            <ul class="mb-4">
+                {% for item in cart %}
+                    <li class="text-gray-700">{{ item.quantity }} x {{ item.product.name }} - ${{ item.total_price }}</li>
+                {% endfor %}
+            </ul>
+            <p class="font-bold text-purple-700 mb-4">Total: ${{ cart.get_total_price }}</p>
+            <h2 class="text-lg font-semibold text-purple-700 mb-2">Pagar con:</h2>
+            <div class="flex items-center space-x-4">
+                <a href="https://www.paypal.com/" target="_blank">
+                    <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="Pagar con PayPal" class="h-10">
+                </a>
+                <a href="https://dashboard.stripe.com/test/payments" target="_blank">
+                    <img src="https://stripe.com/img/v3/home/twitter.png" alt="Pagar con Stripe" class="h-10">
+                </a>
+            </div>
+            <p class="text-xs text-gray-400 mt-2">*Este botón es solo de demostración. No se procesará ningún pago real.</p>
+        </div>
+    </main>
+    <footer class="bg-purple-600 text-white text-center py-4 mt-10">
+        <span>&copy; {{ now|date:"Y" }} Mi Tienda Online. Todos los derechos reservados.</span>
+    </footer>
+</body>
+</html>

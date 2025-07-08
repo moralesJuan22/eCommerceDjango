@@ -42,6 +42,15 @@ class Cart:
             del self.cart[product_id]
             self.save()
 
+    def update(self, product_id, quantity):
+        """
+        Actualiza la cantidad de un producto en el carrito.
+        """
+        product_id = str(product_id)
+        if product_id in self.cart:
+            self.cart[product_id]['quantity'] = quantity
+            self.save()
+
     def __iter__(self):
         """
         Itera sobre los artículos en el carrito y obtiene los productos

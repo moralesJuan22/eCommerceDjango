@@ -1,51 +1,75 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-g">
+    <meta charset="UTF-8">
     <title>Mi Tienda Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Estilos básicos para que se vea decente */
-        body { font-family: sans-serif; }
-        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .product-card { border: 1px solid #ccc; padding: 15px; text-align: center; }
-        .product-card img { max-width: 100%; height: 200px; object-fit: cover; }
+        body { background: #f8f6ff; }
     </style>
 </head>
-<header>
-    <p>
-        Tu carrito: {{ cart|length }} producto(s), ${{ cart.get_total_price }}
-        <a href="{% url 'cart_detail' %}">Ver carrito</a>
-    </p>
-</header>
-<body>
-    <h1>Nuestros Productos</h1>
-
-    <div class="product-grid">
-        {% for product in products %}
-            <div class="product-card">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                {% endif %}
-                <h2>{{ product.name }}</h2>
-                <p><strong>Precio:</strong> ${{ product.price }}</p>
-                <p>{{ product.description|truncatewords:20 }}</p>
+<body class="bg-[#f8f6ff] min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-purple-400 to-purple-600 text-white shadow-md">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between py-4 px-6">
+            <div class="flex items-center space-x-4">
+                <span class="font-bold text-2xl tracking-tight">Mi Tienda Online</span>
             </div>
-
-            <div class="product-card">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4 mt-2 md:mt-0">
+                <span class="text-sm">
+                    Tu carrito: {{ cart|length }} producto(s), ${{ cart.get_total_price }}
+                </span>
+                <a href="{% url 'cart_detail' %}" class="text-white hover:underline font-semibold">Ver carrito</a>
+                {% if user.is_authenticated %}
+                    <span>| Hola, <span class="font-semibold">{{ user.username }}</span></span>
+                    <a href="{% url 'order_history' %}" class="hover:underline">Mis pedidos</a>
+                    <form action="{% url 'logout' %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="hover:underline">Cerrar sesión</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:underline">Iniciar sesión</a>
+                    <a href="{% url 'register' %}" class="hover:underline">Registrarse</a>
                 {% endif %}
-                <h2>{{ product.name }}</h2>
-                <p><strong>Precio:</strong> ${{ product.price }}</p>
-                <p>{{ product.description|truncatewords:20 }}</p>
-    
-                <!-- Formulario para añadir al carrito -->
-                <form action="{% url 'cart_add' product.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Añadir al Carrito</button>
-                </form>
             </div>
-        {% endfor %}
-    </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-purple-700 mb-8 text-center">Nuestros Productos</h1>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+            {% for product in products %}
+                <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="rounded-t-lg w-full h-48 object-cover">
+                    {% else %}
+                        <div class="w-full h-48 bg-purple-100 flex items-center justify-center rounded-t-lg text-purple-400">
+                            <span class="text-6xl">🛒</span>
+                        </div>
+                    {% endif %}
+                    <div class="p-4 flex flex-col flex-1">
+                        <h2 class="text-lg font-bold text-purple-700 mb-2 text-center">
+                            <a href="{% url 'product_detail' product.id %}" class="hover:underline">{{ product.name }}</a>
+                        </h2>
+                        <p class="text-gray-700 text-center mb-2"><strong>Precio:</strong> ${{ product.price }}</p>
+                        <p class="text-gray-500 text-sm mb-4 flex-1">{{ product.description|truncatewords:20 }}</p>
+                        <form action="{% url 'cart_add' product.id %}" method="post" class="mt-auto">
+                            {% csrf_token %}
+                            <button type="submit" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded transition-colors duration-200">
+                                Añadir al Carrito
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-purple-600 text-white text-center py-4 mt-10">
+        <span>&copy; {{ now|date:"Y" }} Mi Tienda Online. Todos los derechos reservados.</span>
+    </footer>
 </body>
 </html>
